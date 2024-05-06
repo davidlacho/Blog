@@ -26,7 +26,7 @@ class Tag(models.Model):
 class Post(models.Model):
     title = models.CharField(max_length=200)
     excerpt = models.CharField(max_length=200)
-    image_name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to="posts", null=True)
     content = models.TextField(validators=[MinLengthValidator(10)])
     date = models.DateTimeField(auto_now=True)
     author = models.ForeignKey(
@@ -48,3 +48,13 @@ class Post(models.Model):
     @property
     def url(self):
         return self.get_absolute_url()
+
+
+class Comment(models.Model):
+    user_name = models.CharField(max_length=100)
+    user_email = models.EmailField()
+    text = models.TextField(validators=[MinLengthValidator(3)])
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
+
+    def __str__(self):
+        return self.text
